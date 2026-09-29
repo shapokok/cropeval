@@ -16,3 +16,14 @@ def test_package_has_version():
 @pytest.mark.parametrize("name", MODULES)
 def test_module_imports(name):
     importlib.import_module(f"cropeval.{name}")
+
+
+def test_version_matches_pyproject():
+    import tomllib
+    from pathlib import Path
+
+    import cropeval
+
+    pyproject = Path(__file__).parents[1] / "pyproject.toml"
+    with pyproject.open("rb") as f:
+        assert cropeval.__version__ == tomllib.load(f)["project"]["version"]

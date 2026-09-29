@@ -6,4 +6,8 @@ for the ``lab`` and ``field`` domains, and quantifies the gap between them
 with a bootstrap confidence interval.
 """
 
-__version__ = "0.1.0"
+from importlib.metadata import version
+
+# The version is defined once, in pyproject.toml, and read from the
+# installed package metadata here, so the two can never disagree.
+__version__ = version("cropeval")
