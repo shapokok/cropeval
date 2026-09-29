@@ -1,5 +1,7 @@
 # cropeval
 
+[![CI](https://github.com/shapokok/cropeval/actions/workflows/ci.yml/badge.svg)](https://github.com/shapokok/cropeval/actions/workflows/ci.yml)
+
 > Status: early scaffold — the API is not implemented yet.
 
 **cropeval** is a small Python package for evaluating the **lab-to-field
@@ -32,13 +34,14 @@ uv run pytest      # run the test suite
 
 ## Planned features
 
-- [ ] Per-domain metrics (accuracy, precision, recall, macro-F1, confusion
+- [x] Per-domain metrics (accuracy, precision, recall, macro-F1, confusion
       matrix) implemented with NumPy and cross-checked against scikit-learn
-- [ ] Domain gap (`lab − field`) with a seeded bootstrap confidence interval
+- [x] Domain gap (`lab − field`) with a seeded bootstrap confidence interval
 - [ ] `cropeval` command-line tool
 - [ ] Synthetic demo data generator (no real research data in the repo)
 - [ ] Plots and a short evaluation report
-- [ ] CI (lint + tests) and a release pipeline on GitHub Actions
+- [x] CI (lint + tests) on GitHub Actions
+- [ ] Release pipeline on GitHub Actions
 
 ## License
 
