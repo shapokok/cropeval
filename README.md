@@ -122,6 +122,26 @@ the tests on Python 3.11 and 3.12 for every pull request and fails if test
 coverage drops below 80%. See [CONTRIBUTING.md](CONTRIBUTING.md) for the
 branch and pull request workflow.
 
+### Releasing
+
+Releases are built by [`.github/workflows/release.yml`](.github/workflows/release.yml)
+when a version tag is pushed:
+
+1. Update `version` in `pyproject.toml` and add the release to
+   [CHANGELOG.md](CHANGELOG.md); merge this through a pull request.
+2. Tag the merged commit on `main` and push the tag:
+
+   ```bash
+   git switch main && git pull
+   git tag -a v0.2.0 -m "cropeval 0.2.0"
+   git push origin v0.2.0
+   ```
+
+The workflow runs the CI checks, verifies that the tag matches the version
+in `pyproject.toml`, builds the sdist and wheel with `uv build`, and
+publishes a [GitHub Release](https://github.com/shapokok/cropeval/releases)
+with both files and automatically generated release notes.
+
 ## Why these technologies
 
 | tool | why it was chosen |
@@ -146,7 +166,7 @@ branch and pull request workflow.
 - [x] Synthetic demo data generator (no real research data in the repo)
 - [x] Plots and a short evaluation report
 - [x] CI (lint + tests) on GitHub Actions
-- [ ] Release pipeline on GitHub Actions
+- [x] Release pipeline on GitHub Actions
 
 ## License
 
