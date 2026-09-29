@@ -168,6 +168,12 @@ with both files and automatically generated release notes.
 - [x] CI (lint + tests) on GitHub Actions
 - [x] Release pipeline on GitHub Actions
 
+## Citation
+
+If you use cropeval in your work, please cite it. The metadata is in
+[CITATION.cff](CITATION.cff); GitHub also shows a **"Cite this repository"**
+button in the sidebar that exports it as APA or BibTeX.
+
 ## License
 
 [MIT](LICENSE) © 2026 Nurshapagat Shapay
