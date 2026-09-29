@@ -1,6 +1,8 @@
 # cropeval
 
 [![CI](https://github.com/shapokok/cropeval/actions/workflows/ci.yml/badge.svg)](https://github.com/shapokok/cropeval/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python 3.11 | 3.12](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue.svg)](pyproject.toml)
 
 **cropeval** is a small Python package for evaluating the **lab-to-field
 domain gap** of image classification models for plant disease detection.
@@ -92,6 +94,48 @@ field rows are each resampled with replacement (keeping their sizes), the gap
 is recomputed, and this is repeated `n_boot` times. The 2.5% and 97.5%
 percentiles of these gaps give the 95% interval. The random generator is
 `numpy.random.default_rng(seed)`, so results are reproducible.
+
+## Development
+
+All commands run inside the project environment created by `uv sync`.
+
+```bash
+uv sync                                   # install runtime + dev dependencies
+
+uv run pytest                             # run all tests
+uv run pytest tests/test_metrics.py -v    # run one test file, verbose
+uv run pytest --cov=cropeval --cov-report=term-missing   # with coverage
+
+uv run ruff check .                       # lint
+uv run ruff check . --fix                 # lint and auto-fix what is safe
+uv run ruff format .                      # format the code
+```
+
+Before every commit, run the same checks as CI:
+
+```bash
+uv run ruff check . && uv run ruff format --check . && uv run pytest
+```
+
+CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs lint and
+the tests on Python 3.11 and 3.12 for every pull request and fails if test
+coverage drops below 80%. See [CONTRIBUTING.md](CONTRIBUTING.md) for the
+branch and pull request workflow.
+
+## Why these technologies
+
+| tool | why it was chosen |
+|------|-------------------|
+| **Python** (>= 3.11) | The standard language for machine learning and data analysis; the models being evaluated are usually trained in Python, so their predictions are easy to feed in. 3.11+ gives modern type hints (`str \| Path`) and faster execution. |
+| **uv** | One fast tool for Python versions, virtual environments, dependencies and builds. `uv.lock` pins exact versions, so local runs and CI use the same environment. |
+| **NumPy** | Metrics are simple array operations (comparisons, sums, a confusion matrix). Writing them in NumPy keeps the formulas visible and explainable, instead of hiding them behind a library call. Its seeded `default_rng` makes the bootstrap reproducible. |
+| **pandas** | Reads and validates the input CSV and splits it by domain in a few readable lines. |
+| **matplotlib** | The most widely used plotting library; produces static PNGs without a browser or display (Agg backend), which suits CI and reports. |
+| **pytest** | Short, readable tests with plain `assert`, parametrisation for many cases, and `tmp_path` for CLI tests that write files. With **pytest-cov** it reports test coverage. |
+| **scikit-learn** (tests only) | A trusted reference implementation: our NumPy metrics are checked against it. It is a dev dependency, so users do not need to install it. |
+| **ruff** | A single, very fast tool that replaces flake8, isort and black: it both lints and formats, with one config section in `pyproject.toml`. |
+| **GitHub Actions** | Built into GitHub, free for public repositories, and runs lint and tests automatically on every pull request, so broken code cannot be merged unnoticed. |
+| **hatchling** | A simple, standards-based build backend that needs almost no configuration for a `src/` layout package. |
 
 ## Features
 
