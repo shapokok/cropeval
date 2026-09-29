@@ -29,7 +29,7 @@ First release.
 - CI on GitHub Actions: ruff lint/format and tests on Python 3.11 and 3.12
   with coverage ≥ 80% (#6).
 - Release workflow: on a `v*` tag, run the checks, build sdist and wheel,
-  and publish a GitHub Release (#4).
+  and publish a GitHub Release (#9).
 - README sections on usage, development and technology choices;
   CONTRIBUTING.md (#8).
 
