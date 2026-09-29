@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata from this file."
+type: software
+title: cropeval
+abstract: >-
+  A small Python package for evaluating the lab-to-field domain gap of
+  image classification models for plant disease detection: per-domain
+  metrics, accuracy gap with a bootstrap confidence interval, plots and
+  a report.
+authors:
+  - given-names: Nurshapagat
+    family-names: Shapay
+version: 0.1.0
+date-released: "2026-09-29"
+license: MIT
+repository-code: "https://github.com/shapokok/cropeval"
+url: "https://github.com/shapokok/cropeval"
+keywords:
+  - domain gap
+  - domain adaptation
+  - plant disease
+  - evaluation metrics
+  - bootstrap
