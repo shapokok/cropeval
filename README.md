@@ -122,6 +122,21 @@ the tests on Python 3.11 and 3.12 for every pull request and fails if test
 coverage drops below 80%. See [CONTRIBUTING.md](CONTRIBUTING.md) for the
 branch and pull request workflow.
 
+## Why these technologies
+
+| tool | why it was chosen |
+|------|-------------------|
+| **Python** (>= 3.11) | The standard language for machine learning and data analysis; the models being evaluated are usually trained in Python, so their predictions are easy to feed in. 3.11+ gives modern type hints (`str \| Path`) and faster execution. |
+| **uv** | One fast tool for Python versions, virtual environments, dependencies and builds. `uv.lock` pins exact versions, so local runs and CI use the same environment. |
+| **NumPy** | Metrics are simple array operations (comparisons, sums, a confusion matrix). Writing them in NumPy keeps the formulas visible and explainable, instead of hiding them behind a library call. Its seeded `default_rng` makes the bootstrap reproducible. |
+| **pandas** | Reads and validates the input CSV and splits it by domain in a few readable lines. |
+| **matplotlib** | The most widely used plotting library; produces static PNGs without a browser or display (Agg backend), which suits CI and reports. |
+| **pytest** | Short, readable tests with plain `assert`, parametrisation for many cases, and `tmp_path` for CLI tests that write files. With **pytest-cov** it reports test coverage. |
+| **scikit-learn** (tests only) | A trusted reference implementation: our NumPy metrics are checked against it. It is a dev dependency, so users do not need to install it. |
+| **ruff** | A single, very fast tool that replaces flake8, isort and black: it both lints and formats, with one config section in `pyproject.toml`. |
+| **GitHub Actions** | Built into GitHub, free for public repositories, and runs lint and tests automatically on every pull request, so broken code cannot be merged unnoticed. |
+| **hatchling** | A simple, standards-based build backend that needs almost no configuration for a `src/` layout package. |
+
 ## Features
 
 - [x] Per-domain metrics (accuracy, precision, recall, macro-F1, confusion
