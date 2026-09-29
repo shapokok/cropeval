@@ -95,6 +95,33 @@ is recomputed, and this is repeated `n_boot` times. The 2.5% and 97.5%
 percentiles of these gaps give the 95% interval. The random generator is
 `numpy.random.default_rng(seed)`, so results are reproducible.
 
+## Development
+
+All commands run inside the project environment created by `uv sync`.
+
+```bash
+uv sync                                   # install runtime + dev dependencies
+
+uv run pytest                             # run all tests
+uv run pytest tests/test_metrics.py -v    # run one test file, verbose
+uv run pytest --cov=cropeval --cov-report=term-missing   # with coverage
+
+uv run ruff check .                       # lint
+uv run ruff check . --fix                 # lint and auto-fix what is safe
+uv run ruff format .                      # format the code
+```
+
+Before every commit, run the same checks as CI:
+
+```bash
+uv run ruff check . && uv run ruff format --check . && uv run pytest
+```
+
+CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs lint and
+the tests on Python 3.11 and 3.12 for every pull request and fails if test
+coverage drops below 80%. See [CONTRIBUTING.md](CONTRIBUTING.md) for the
+branch and pull request workflow.
+
 ## Features
 
 - [x] Per-domain metrics (accuracy, precision, recall, macro-F1, confusion
