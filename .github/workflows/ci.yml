@@ -5,6 +5,8 @@ on:
   push:
     branches: [main]
   pull_request:
+  # Lets release.yml run exactly the same checks before publishing.
+  workflow_call:
 
 # Cancel an older run of the same branch/PR when a new commit is pushed.
 concurrency:

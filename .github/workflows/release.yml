@@ -1,0 +1,63 @@
+# Release: when a version tag (e.g. v0.1.0) is pushed, run the CI checks,
+# build the package and publish a GitHub Release with the built files.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: CI checks
+    # Reuse the lint + test jobs from ci.yml instead of duplicating them.
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    name: Build and publish release
+    needs: checks # only release if lint and tests passed
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # needed to create the GitHub Release
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.2.0 # no floating major tag; pin exact release
+
+      - name: Check that the tag matches the package version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"   # v0.1.0 -> 0.1.0
+          PACKAGE_VERSION="$(uv version --short)"
+          echo "tag: $TAG_VERSION, pyproject.toml: $PACKAGE_VERSION"
+          if [ "$TAG_VERSION" != "$PACKAGE_VERSION" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match version $PACKAGE_VERSION in pyproject.toml"
+            exit 1
+          fi
+
+      - name: Build sdist and wheel
+        run: uv build
+
+      - name: Smoke-test the wheel in a clean environment
+        run: uv run --isolated --no-project --with dist/*.whl cropeval --version
+
+      - name: Upload dist as workflow artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Tags with a suffix such as v0.2.0-rc1 are marked as pre-releases.
+          PRERELEASE=""
+          if [[ "$GITHUB_REF_NAME" == *-* ]]; then PRERELEASE="--prerelease"; fi
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "cropeval $GITHUB_REF_NAME" \
+            --generate-notes \
+            --verify-tag \
+            $PRERELEASE
