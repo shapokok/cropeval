@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `CITATION.cff` with software citation metadata.
+- Multi-stage `Dockerfile` (`base`, `test`, `runtime`) and `.dockerignore`;
+  the runtime image runs the `cropeval` CLI as a non-root user (#15).
 
 ## [0.1.0] - 2026-09-29
 
