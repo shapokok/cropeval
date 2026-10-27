@@ -25,6 +25,7 @@ coverage.xml
 
 # Generated outputs (plots, reports)
 outputs/
+tmp-out/
 
 # Editors / OS
 .vscode/

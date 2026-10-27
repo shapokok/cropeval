@@ -95,6 +95,41 @@ is recomputed, and this is repeated `n_boot` times. The 2.5% and 97.5%
 percentiles of these gaps give the 95% interval. The random generator is
 `numpy.random.default_rng(seed)`, so results are reproducible.
 
+## Docker
+
+The CLI can also run in a container, without a local Python or uv. The
+[`Dockerfile`](Dockerfile) has three stages:
+
+| stage     | what it contains |
+|-----------|------------------|
+| `base`    | `python:3.12-slim` + uv; runtime dependencies installed from `uv.lock` (`uv sync --locked`) and the `cropeval` package |
+| `test`    | `base` + dev dependencies; runs `ruff check`, `ruff format --check` and `pytest` during the build |
+| `runtime` | a clean `python:3.12-slim` with only the virtual environment from `base`; runs as the unprivileged user `cropeval` (UID 10001) |
+
+```bash
+# Lint and tests inside the container: the build fails if a check fails
+docker build --target test -t shapok/cropeval:test .
+
+# Runtime image (the last stage)
+docker build -t shapok/cropeval:dev .
+
+docker run --rm shapok/cropeval:dev --version   # cropeval 0.1.0
+docker run --rm shapok/cropeval:dev             # no arguments: prints --help
+```
+
+The container reads and writes files in its working folder, so mount a host
+folder there:
+
+```bash
+mkdir -p tmp-out
+docker run --rm -v "$PWD/tmp-out:/work" -w /work shapok/cropeval:dev demo -o data.csv
+docker run --rm -v "$PWD/tmp-out:/work" -w /work shapok/cropeval:dev report data.csv -o report/
+```
+
+The results appear in `tmp-out/` on the host. On Linux, if the mounted folder
+is not writable for UID 10001, run the container as your own user by adding
+`--user "$(id -u):$(id -g)"` to `docker run`.
+
 ## Development
 
 All commands run inside the project environment created by `uv sync`.
@@ -156,6 +191,7 @@ with both files and automatically generated release notes.
 | **ruff** | A single, very fast tool that replaces flake8, isort and black: it both lints and formats, with one config section in `pyproject.toml`. |
 | **GitHub Actions** | Built into GitHub, free for public repositories, and runs lint and tests automatically on every pull request, so broken code cannot be merged unnoticed. |
 | **hatchling** | A simple, standards-based build backend that needs almost no configuration for a `src/` layout package. |
+| **Docker** | Packs Python, the locked dependencies and the CLI into one image that runs the same on any machine. A multi-stage build runs the checks in a `test` stage and keeps the final image small, without dev tools, and running as a non-root user. |
 
 ## Features
 
@@ -167,6 +203,7 @@ with both files and automatically generated release notes.
 - [x] Plots and a short evaluation report
 - [x] CI (lint + tests) on GitHub Actions
 - [x] Release pipeline on GitHub Actions
+- [x] Docker image (multi-stage build, non-root user)
 
 ## Citation
 

@@ -1,0 +1,34 @@
+# Keep the build context small: the Dockerfile only needs pyproject.toml,
+# uv.lock, README.md, LICENSE, src/ and tests/.
+
+# Version control and local environments
+.git
+.github
+.venv
+venv
+
+# Generated outputs and local data
+out/
+tmp-out/
+outputs/
+data.csv
+dist/
+build/
+*.egg-info
+
+# Caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Local notes, editors, OS
+CLAUDE.md
+.vscode/
+.idea/
+.DS_Store
